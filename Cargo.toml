@@ -1,0 +1,23 @@
+[package]
+name = "snp"
+version = "0.1.0"
+authors = ["The Enarx Developers <enarx-devel@lists.enarx.dev>"]
+license = "Apache-2.0"
+edition = "2018"
+homepage = "https://github.com/enarx/snp"
+repository = "https://github.com/enarx/snp"
+description = "Library for AMD SEV-SNP"
+keywords = ["amd", "sev", "snp"]
+categories = ["os", "os::linux-apis", "parsing", "network-programming", "hardware-support"]
+exclude = [ ".gitignore" ]
+
+[badges]
+# See https://doc.rust-lang.org/cargo/reference/manifest.html#the-badges-section
+github = { repository = "enarx/snp", workflow = "test" }
+maintenance = { status = "actively-developed" }
+is-it-maintained-issue-resolution = { repository = "enarx/snp" }
+is-it-maintained-open-issues = { repository = "enarx/snp" }
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
