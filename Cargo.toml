@@ -1,0 +1,27 @@
+[package]
+name = "snp"
+version = "0.1.0"
+authors = ["Nathaniel McCallum <npmccallum@redhat.com>"]
+edition = "2018"
+homepage = "https://github.com/enarx/snp"
+repository = "https://github.com/enarx/snp"
+description = "Library for AMD SEV-SNP"
+readme = "README.md"
+keywords = ["amd", "snp"]
+categories = ["os", "os::linux-apis", "parsing", "network-programming", "hardware-support"]
+exclude = [ ".gitignore", ".github/*" ]
+
+[badges]
+# See https://doc.rust-lang.org/cargo/reference/manifest.html#the-badges-section
+github = { repository = "enarx/snp", workflow = "test" }
+#github = { repository = "enarx/snp", workflow = "lint" }
+maintenance = { status = "actively-developed" }
+is-it-maintained-issue-resolution = { repository = "enarx/snp" }
+is-it-maintained-open-issues = { repository = "enarx/snp" }
+
+[features]
+default = []
+hw_tests = []
+dangerous_hw_tests = ["hw_tests"]
+
+[dependencies]
