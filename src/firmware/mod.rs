@@ -209,3 +209,44 @@ impl std::fmt::Display for Indeterminate<Error> {
         write!(f, "{}", err)
     }
 }
+
+/// The platform state.
+///
+/// The underlying SEV-SNP platform behaves like a state machine and
+/// can only perform certain actions while it is in certain states.
+#[derive(Copy, Clone, Debug, PartialEq)]
+#[repr(u8)]
+pub enum State {
+    /// The platform is uninitialized.
+    Uninitialized,
+
+    /// The platform is initialized, but not currently managing any
+    /// guests.
+    Initialized,
+}
+
+impl std::fmt::Display for State {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let state = match self {
+            State::Uninitialized => "Uninitialized",
+            State::Initialized => "Initialized",
+        };
+        write!(f, "{}", state)
+    }
+}
+
+/// Information regarding the SEV-SNP platform's current status.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Status {
+    /// The build number.
+    pub build: Build,
+
+    /// The platform's current state.
+    pub state: State,
+
+    /// The number of valid guests supervised by this platform.
+    pub guests: u32,
+
+    /// The installed TCB version.
+    pub tcb_version: u64,
+}
