@@ -21,3 +21,4 @@ is-it-maintained-open-issues = { repository = "enarx/snp" }
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+iocuddle = "0.1.1"
