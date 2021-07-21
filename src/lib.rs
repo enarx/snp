@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-//! The `snp` crate provides an implementation of [AMD Secure Encrypted
-//! Virtualization - Secure Nested Paging (SEV-SNP)] APIs.
+//! The `snp` crate provides an implementation of the AMD Secure Encrypted
+//! Virtualization - Secure Nested Paging (SEV-SNP) APIs.
 //!
 //! The Linux kernel exposes two technically distinct AMD SEV-SNP APIs:
 //!
