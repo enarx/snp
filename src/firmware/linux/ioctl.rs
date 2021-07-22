@@ -15,6 +15,8 @@ use std::marker::PhantomData;
 impl_const_id! {
     pub Id => u32;
     PlatformStatus = 256,
+    SetExtConfig<'_> = 257,
+    GetExtConfig<'_> = 258,
 }
 
 // SEV-SNP ioctls are grouped with other SEV-ioctls.
@@ -23,6 +25,12 @@ const SEV: Group = Group::new(b'S');
 /// Return information about the current status and capabilities of the SEV-SNP platform.
 pub const PLATFORM_STATUS: Ioctl<WriteRead, &Command<PlatformStatus>> =
     unsafe { SEV.write_read(0) };
+
+/// Set the system wide configuration values for SNP.
+pub const SET_EXT_CONFIG: Ioctl<WriteRead, &Command<SetExtConfig>> = unsafe { SEV.write_read(0) };
+
+/// Get the system wide configuration values for SNP.
+pub const GET_EXT_CONFIG: Ioctl<WriteRead, &Command<GetExtConfig>> = unsafe { SEV.write_read(0) };
 
 /// The Rust-flavored, FFI-friendly version of `struct sev_issue_cmd` which is
 /// used to pass arguments to the SEV ioctl implementation.
@@ -53,7 +61,6 @@ impl<'a, T: Id> Command<'a, T> {
     /// the caller's address space in its response. Note: this does not actually prevent the host
     /// platform/kernel from writing to the caller's address space if it wants to. This is primarily
     /// a semantic tool for programming against the SEV-SNP ioctl API.
-    #[allow(dead_code)] // will be used with the config ioctl.
     pub fn from(subcmd: &'a T) -> Self {
         Command {
             code: T::ID,

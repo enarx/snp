@@ -44,6 +44,32 @@ impl Firmware {
             },
         })
     }
+
+    /// Set the system-wide SNP variables.
+    pub fn set_ext_config(
+        &mut self,
+        config_address: u64,
+        certs_address: u64,
+        certs_len: u32,
+    ) -> Result<(), Indeterminate<Error>> {
+        let info: SetExtConfig = SetExtConfig::new(config_address, certs_address, certs_len);
+        match SET_EXT_CONFIG.ioctl(&mut self.0, &mut Command::from(&info)) {
+            Ok(_) => Ok(()),
+            Err(e) => Err(Indeterminate::Known(firmware::Error::IoError(e))),
+        }
+    }
+
+    /// Get the system-wide SNP variables.
+    pub fn get_ext_config(&mut self) -> Result<ExtConfig, Indeterminate<Error>> {
+        let mut info: GetExtConfig = Default::default();
+        GET_EXT_CONFIG.ioctl(&mut self.0, &mut Command::from_mut(&mut info))?;
+
+        Ok(ExtConfig {
+            config_address: info.config_address,
+            certs_address: info.certs_address,
+            certs_len: info.certs_len,
+        })
+    }
 }
 
 impl AsRawFd for Firmware {

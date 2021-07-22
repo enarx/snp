@@ -23,3 +23,20 @@ fn platform_status() {
         status.state
     );
 }
+
+#[cfg_attr(not(has_sev), ignore)]
+#[test]
+fn ext_config() {
+    let mut fw = Firmware::open().unwrap();
+
+    fw.set_ext_config(0, 0, 0).unwrap();
+
+    let config = fw.get_ext_config().unwrap();
+    println!(
+        "Get platform config results:\n
+        config_address: {}\n
+        certs_address: {}\n
+        certs_len: {}",
+        config.config_address, config.certs_address, config.certs_len
+    );
+}
