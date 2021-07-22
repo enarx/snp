@@ -23,3 +23,41 @@ pub struct PlatformStatus {
     /// The installed TCB version.
     pub tcb_version: u64,
 }
+
+/// Set the system wide SNP variables.
+#[derive(Default)]
+#[repr(C, packed)]
+pub struct SetExtConfig {
+    /// Address of the struct sev_user_data_snp_config or 0 when reported_tcb does not need to be
+    /// updated.
+    pub config_address: u64,
+    /// Address of extended guest request certificate chain or 0 when previous certificate should
+    /// be removed on SNP_SET_EXT_CONFIG.
+    pub certs_address: u64,
+    /// Length of the certs.
+    pub certs_len: u32,
+}
+
+impl SetExtConfig {
+    pub fn new(config_address: u64, certs_address: u64, certs_len: u32) -> Self {
+        Self {
+            config_address,
+            certs_address,
+            certs_len,
+        }
+    }
+}
+
+/// Get the system wide SNP variables.
+#[derive(Default)]
+#[repr(C, packed)]
+pub struct GetExtConfig {
+    /// Address of the struct sev_user_data_snp_config or 0 when reported_tcb does not need to be
+    /// updated.
+    pub config_address: u64,
+    /// Address of extended guest request certificate chain or 0 when previous certificate should
+    /// be removed on SNP_SET_EXT_CONFIG.
+    pub certs_address: u64,
+    /// Length of the certs.
+    pub certs_len: u32,
+}

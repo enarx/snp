@@ -250,3 +250,17 @@ pub struct Status {
     /// The installed TCB version.
     pub tcb_version: u64,
 }
+
+/// System wide configuration value for SNP.
+#[repr(C)]
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord)]
+pub struct ExtConfig {
+    /// Address of the struct sev_user_data_snp_config or 0 when reported_tcb does not need to be
+    /// updated.
+    pub config_address: u64,
+    /// Address of extended guest request certificate chain or 0 when previous certificate should
+    /// be removed on SNP_SET_EXT_CONFIG.
+    pub certs_address: u64,
+    /// Length of the certs.
+    pub certs_len: u32,
+}
