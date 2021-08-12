@@ -14,6 +14,7 @@ impl_const_id! {
     pub Id => u32;
     Init = 256,
     LaunchStart<'_> = 257,
+    LaunchUpdate<'_> = 258,
 }
 
 const KVM: Group = Group::new(0xAE);
@@ -36,6 +37,9 @@ pub const SNP_INIT: Ioctl<WriteRead, &Command<Init>> = unsafe { ENC_OP.lie() };
 
 /// Initialize the flow to launch a guest.
 pub const SNP_LAUNCH_START: Ioctl<WriteRead, &Command<LaunchStart>> = unsafe { ENC_OP.lie() };
+
+/// Insert pages into the guest physical address space.
+pub const SNP_LAUNCH_UPDATE: Ioctl<WriteRead, &Command<LaunchUpdate>> = unsafe { ENC_OP.lie() };
 
 #[repr(C)]
 pub struct Command<'a, T: Id> {

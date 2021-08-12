@@ -56,5 +56,17 @@ fn snp() {
         gosvw: x,
     };
 
-    let _launcher = launcher.start(&mut start).unwrap();
+    let mut launcher = launcher.start(&mut start).unwrap();
+
+    let update = Update {
+        imi_page: false,
+        page_type: PageType::Normal,
+        vmpl3_perms: VmplPerms::default(),
+        vmpl2_perms: VmplPerms::default(),
+        vmpl1_perms: VmplPerms::default(),
+    };
+
+    launcher
+        .update_data(address_space.as_ref(), &update)
+        .unwrap();
 }

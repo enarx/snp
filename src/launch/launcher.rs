@@ -54,3 +54,14 @@ impl<'a, U: AsRawFd, V: AsRawFd> Launcher<'a, New, U, V> {
         Ok(launcher)
     }
 }
+
+impl<'a, U: AsRawFd, V: AsRawFd> Launcher<'a, Started, U, V> {
+    /// Encrypt guest data.
+    pub fn update_data(&mut self, data: &[u8], update: &Update) -> Result<()> {
+        let launch_update_data = LaunchUpdate::new(data, update);
+        let mut cmd = Command::from(self.sev, &launch_update_data);
+        SNP_LAUNCH_UPDATE.ioctl(self.kvm, &mut cmd)?;
+
+        Ok(())
+    }
+}
