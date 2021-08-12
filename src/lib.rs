@@ -27,6 +27,9 @@
 #![allow(clippy::unreadable_literal)]
 
 pub mod firmware;
+pub mod kvm;
+/// Expose API for launching SNP-enabled guests.
+pub mod launch;
 mod util;
 
 use crate::util::{TypeLoad, TypeSave};

@@ -24,3 +24,8 @@ is-it-maintained-open-issues = { repository = "enarx/snp" }
 iocuddle = "0.1.1"
 serde = { version = "1.0", features = ["derive"] }
 codicon = "3.0"
+
+[dev-dependencies]
+kvm-bindings = "0.3"
+kvm-ioctls = "0.6"
+mmarinus = "0.2"
