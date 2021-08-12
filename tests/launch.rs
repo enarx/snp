@@ -2,6 +2,8 @@
 
 use snp::firmware::Firmware;
 use snp::launch::launcher::*;
+use snp::launch::*;
+use snp::Version;
 
 use kvm_bindings::kvm_userspace_memory_region;
 use kvm_ioctls::Kvm;
@@ -14,6 +16,8 @@ fn snp() {
 
     let kvm = Kvm::new().unwrap();
     let mut vm = kvm.create_vm().unwrap();
+
+    let status = sev.platform_status().unwrap();
 
     const MEM_SIZE: usize = 0x1000;
     let address_space = Map::map(MEM_SIZE)
@@ -34,5 +38,23 @@ fn snp() {
         vm.set_user_memory_region(mem_region).unwrap();
     }
 
-    let _launcher = Launcher::new(&mut vm, &mut sev).unwrap();
+    let launcher = Launcher::new(&mut vm, &mut sev).unwrap();
+
+    let x: [u8; 16] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+    let mut start = Start {
+        policy: Policy {
+            flags: PolicyFlags::SMT,
+            minfw: Version {
+                major: status.build.version.major,
+                minor: status.build.version.minor,
+            },
+        },
+        ma_uaddr: 0,
+        ma_en: false,
+        imi_en: false,
+        gosvw: x,
+    };
+
+    let _launcher = launcher.start(&mut start).unwrap();
 }

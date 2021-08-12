@@ -13,6 +13,7 @@ use std::os::unix::io::AsRawFd;
 impl_const_id! {
     pub Id => u32;
     Init = 256,
+    LaunchStart<'_> = 257,
 }
 
 const KVM: Group = Group::new(0xAE);
@@ -33,6 +34,9 @@ const ENC_OP: Ioctl<WriteRead, &c_ulong> = unsafe { KVM.write_read(0xBA) };
 /// Initialize the SEV-SNP platform in KVM.
 pub const SNP_INIT: Ioctl<WriteRead, &Command<Init>> = unsafe { ENC_OP.lie() };
 
+/// Initialize the flow to launch a guest.
+pub const SNP_LAUNCH_START: Ioctl<WriteRead, &Command<LaunchStart>> = unsafe { ENC_OP.lie() };
+
 #[repr(C)]
 pub struct Command<'a, T: Id> {
     code: u32,
@@ -47,6 +51,16 @@ impl<'a, T: Id> Command<'a, T> {
         Self {
             code: T::ID,
             data: subcmd as *const T as _,
+            error: 0,
+            sev_fd: sev.as_raw_fd() as _,
+            _phantom: PhantomData,
+        }
+    }
+
+    pub fn from_mut(sev: &'a mut impl AsRawFd, subcmd: &'a mut T) -> Self {
+        Self {
+            code: T::ID,
+            data: subcmd as *mut T as _,
             error: 0,
             sev_fd: sev.as_raw_fd() as _,
             _phantom: PhantomData,
