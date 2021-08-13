@@ -6,6 +6,8 @@ pub mod launcher;
 #[cfg(target_os = "linux")]
 mod linux;
 
+use crate::kvm::types::KVM_SEV_SNP_FINISH_DATA_SIZE;
+
 use super::*;
 use bitflags::bitflags;
 use serde::{Deserialize, Serialize};
@@ -156,4 +158,24 @@ impl PageType {
             PageType::Cpuid => 0x6,
         }
     }
+}
+
+/// Encapsulates the data needed to complete a guest launch.
+#[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Deserialize, Serialize)]
+pub struct Finish {
+    /// Userspace address of the ID block. Ignored if ID_BLOCK_EN is 0.
+    pub id_block_uaddr: u64,
+
+    /// Userspace address of the authentication information of the ID block. Ignored if ID_BLOCK_EN is 0.
+    pub id_auth_uaddr: u64,
+
+    /// Indicates that the ID block is present.
+    pub id_block_en: bool,
+
+    /// Indicates that the author key is present in the ID authentication information structure.
+    /// Ignored if ID_BLOCK_EN is 0.
+    pub auth_key_en: bool,
+
+    /// Opaque host-supplied data to describe the guest. The firmware does not interpret this value.
+    pub host_data: [u8; KVM_SEV_SNP_FINISH_DATA_SIZE],
 }

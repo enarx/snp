@@ -69,4 +69,16 @@ fn snp() {
     launcher
         .update_data(address_space.as_ref(), &update)
         .unwrap();
+
+    let hd: [u8; 32] = [0; 32];
+
+    let finish = Finish {
+        id_block_uaddr: 0,
+        id_auth_uaddr: 0,
+        id_block_en: false,
+        auth_key_en: false,
+        host_data: hd,
+    };
+
+    launcher.finish(finish).unwrap();
 }

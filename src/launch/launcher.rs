@@ -64,4 +64,14 @@ impl<'a, U: AsRawFd, V: AsRawFd> Launcher<'a, Started, U, V> {
 
         Ok(())
     }
+
+    /// Complete the SNP launch process.
+    pub fn finish(self, finish: Finish) -> Result<()> {
+        let launch_finish = LaunchFinish::new(&finish);
+        let mut cmd = Command::from(self.sev, &launch_finish);
+
+        SNP_LAUNCH_FINISH.ioctl(self.kvm, &mut cmd)?;
+
+        Ok(())
+    }
 }

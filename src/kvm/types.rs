@@ -97,3 +97,40 @@ impl<'a, 'b> LaunchUpdate<'a> {
         }
     }
 }
+
+pub const KVM_SEV_SNP_FINISH_DATA_SIZE: usize = 32;
+
+/// Complete the guest launch flow.
+#[repr(C)]
+pub struct LaunchFinish<'a> {
+    /// Userspace address of the ID block. Ignored if ID_BLOCK_EN is 0.
+    id_block_uaddr: u64,
+
+    /// Userspace address of the authentication information of the ID block. Ignored if ID_BLOCK_EN is 0.
+    id_auth_uaddr: u64,
+
+    /// Indicates that the ID block is present.
+    id_block_en: u8,
+
+    /// Indicates that the author key is present in the ID authentication information structure.
+    /// Ignored if ID_BLOCK_EN is 0.
+    auth_key_en: u8,
+
+    /// Opaque host-supplied data to describe the guest. The firmware does not interpret this value.
+    host_data: [u8; KVM_SEV_SNP_FINISH_DATA_SIZE],
+
+    _phantom: PhantomData<&'a ()>,
+}
+
+impl<'a> LaunchFinish<'a> {
+    pub fn new(finish: &'a Finish) -> Self {
+        Self {
+            id_block_uaddr: finish.id_block_uaddr,
+            id_auth_uaddr: finish.id_auth_uaddr,
+            id_block_en: finish.id_block_en as _,
+            auth_key_en: finish.auth_key_en as _,
+            host_data: finish.host_data,
+            _phantom: PhantomData,
+        }
+    }
+}
