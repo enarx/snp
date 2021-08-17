@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
+use sev_iocuddle::sev::*;
 use snp::firmware::Firmware;
 use snp::launch::launcher::*;
 use snp::launch::*;
-use snp::Version;
 
 use kvm_bindings::kvm_userspace_memory_region;
 use kvm_ioctls::Kvm;

@@ -25,6 +25,7 @@ iocuddle = "0.1.1"
 serde = { version = "1.0", features = ["derive"] }
 codicon = "3.0"
 bitflags = "1.2"
+sev-iocuddle = { git = "https://github.com/enarx/sev-iocuddle", branch = "master" }
 
 [dev-dependencies]
 kvm-bindings = "0.3"

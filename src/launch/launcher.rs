@@ -4,6 +4,8 @@ use crate::kvm::types::*;
 use crate::launch::linux::ioctl::*;
 use crate::launch::*;
 
+use sev_iocuddle::kvm::Command;
+
 use std::io::Result;
 use std::os::unix::io::AsRawFd;
 

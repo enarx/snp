@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::Version;
+use sev_iocuddle::sev::Version;
 
 use std::marker::PhantomData;
 

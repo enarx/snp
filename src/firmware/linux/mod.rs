@@ -4,6 +4,8 @@
 
 mod ioctl;
 
+use sev_iocuddle::error::*;
+
 use std::fs::{File, OpenOptions};
 use std::os::unix::io::{AsRawFd, RawFd};
 
@@ -55,7 +57,7 @@ impl Firmware {
         let info: SetExtConfig = SetExtConfig::new(config_address, certs_address, certs_len);
         match SET_EXT_CONFIG.ioctl(&mut self.0, &mut Command::from(&info)) {
             Ok(_) => Ok(()),
-            Err(e) => Err(Indeterminate::Known(firmware::Error::IoError(e))),
+            Err(e) => Err(Indeterminate::Known(Error::IoError(e))),
         }
     }
 

@@ -8,9 +8,9 @@ mod linux;
 
 use crate::kvm::types::KVM_SEV_SNP_FINISH_DATA_SIZE;
 
-use super::*;
 use bitflags::bitflags;
 use serde::{Deserialize, Serialize};
+use sev_iocuddle::sev::*;
 
 bitflags! {
     /// Configurable SNP Policy options.
