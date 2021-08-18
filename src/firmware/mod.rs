@@ -8,12 +8,13 @@ mod types;
 
 use super::*;
 use std::fmt::Debug;
+use std::{error, io};
 
 #[cfg(target_os = "linux")]
 pub use linux::Firmware;
 
 /// There are a number of error conditions that can occur between this
-/// layer all the way down to the SEV-SNP platform. Most of these cases have
+/// layer all the way down to the SEV platform. Most of these cases have
 /// been enumerated; however, there is a possibility that some error
 /// conditions are not encapsulated here.
 #[derive(Debug)]
@@ -34,7 +35,7 @@ pub enum Indeterminate<T: Debug> {
 pub enum Error {
     /// Something went wrong when communicating with the "outside world"
     /// (kernel, SEV platform).
-    IoError(std::io::Error),
+    IoError(io::Error),
 
     /// The platform state is invalid for this command.
     InvalidPlatformState,
@@ -151,17 +152,36 @@ impl std::fmt::Display for Error {
     }
 }
 
-impl From<std::io::Error> for Error {
+impl error::Error for Error {
+    fn source(&self) -> Option<&(dyn error::Error + 'static)> {
+        match self {
+            Error::IoError(e) => Some(e),
+            _ => None,
+        }
+    }
+}
+
+impl From<io::Error> for Error {
     #[inline]
-    fn from(error: std::io::Error) -> Error {
+    fn from(error: io::Error) -> Error {
         Error::IoError(error)
     }
 }
 
-impl From<std::io::Error> for Indeterminate<Error> {
+impl From<io::Error> for Indeterminate<Error> {
     #[inline]
-    fn from(error: std::io::Error) -> Indeterminate<Error> {
+    fn from(error: io::Error) -> Indeterminate<Error> {
         Indeterminate::Known(error.into())
+    }
+}
+
+impl From<Indeterminate<Error>> for io::Error {
+    #[inline]
+    fn from(indeterminate: Indeterminate<Error>) -> io::Error {
+        match indeterminate {
+            Indeterminate::Known(e) => io::Error::new(io::ErrorKind::Other, e),
+            Indeterminate::Unknown => io::Error::new(io::ErrorKind::Other, "unknown SEV error"),
+        }
     }
 }
 
@@ -169,7 +189,7 @@ impl From<u32> for Indeterminate<Error> {
     #[inline]
     fn from(error: u32) -> Indeterminate<Error> {
         Indeterminate::Known(match error {
-            0 => std::io::Error::last_os_error().into(),
+            0 => io::Error::last_os_error().into(),
             1 => Error::InvalidPlatformState,
             2 => Error::InvalidGuestState,
             3 => Error::InvalidConfig,
@@ -196,17 +216,6 @@ impl From<u32> for Indeterminate<Error> {
             24 => Error::SecureDataInvalid,
             _ => return Indeterminate::Unknown,
         })
-    }
-}
-
-impl std::fmt::Display for Indeterminate<Error> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let err = match self {
-            Indeterminate::Known(e) => format!("Known error: {}", e),
-            Indeterminate::Unknown => "Unknown error".to_string(),
-        };
-
-        write!(f, "{}", err)
     }
 }
 
