@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["The Enarx Developers <enarx-devel@lists.enarx.dev>"]
 license = "Apache-2.0"
 edition = "2018"
+rust-version = "1.56"
 homepage = "https://github.com/enarx/snp"
 repository = "https://github.com/enarx/snp"
 description = "Library for AMD SEV-SNP"
